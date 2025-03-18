@@ -36,7 +36,6 @@ class TestCreateCourier:
 
     @allure.title('Создать курьера без пароля')
     def test_create_courier_without_password_code_400(self):
-        # Создать нового курьера без пароля
         payload = {"login": LOGIN, "firstName": FIRST_NAME}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
@@ -44,7 +43,6 @@ class TestCreateCourier:
 
     @allure.title('Создать курьера без логина')
     def test_create_courier_without_login_code_400(self):
-        # Создать нового курьера без пароля
         payload = {"password": PASSWORD, "firstName": FIRST_NAME}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
@@ -52,7 +50,6 @@ class TestCreateCourier:
 
     @allure.title('Создать курьера без firstName')
     def test_create_courier_without_firstname_code_400(self):
-        # Создать нового курьера без пароля
         payload = {"login": LOGIN, "password": PASSWORD,}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
@@ -61,7 +58,6 @@ class TestCreateCourier:
 
     @allure.title('Создать курьера c логином, который уже существует в системе')
     def test_create_courier_with_login_already_exists_show_message_conflict(self, create_courier, delete_courier):
-        # Создать еще одного курьера с таким же логином
         payload = {"login": LOGIN, "password": generate_password(), "firstName": generate_first_name()}
         response = requests.post(f'{MAIN_URL}/api/v1/courier', data=payload)
 
