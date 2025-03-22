@@ -8,6 +8,8 @@ from data import MAIN_URL, LOGIN, PASSWORD, CREATE_COURIER_URL, LOGIN_COURIER_UR
 def delete_courier():
     yield
 
+    """Фикстура для удаления курьера после завершения теста."""
+
     payload = {"login": LOGIN, "password": PASSWORD}
     response = requests.post(f'{MAIN_URL}{LOGIN_COURIER_URL}', data=payload)
     id_courier = response.json()['id']
@@ -16,5 +18,7 @@ def delete_courier():
 
 @pytest.fixture()
 def create_courier():
+
+    """Фикстура для создания курьера перед выполнением тестов."""
     payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
     requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)

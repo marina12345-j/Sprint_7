@@ -3,7 +3,6 @@ import pytest
 import requests
 from helpers import generate_password, generate_login
 from data import MAIN_URL, LOGIN, PASSWORD
-from  conftest import create_courier
 
 class TestLoginCourier:
 

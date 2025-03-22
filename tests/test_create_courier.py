@@ -2,7 +2,7 @@ import allure
 import requests
 from helpers import generate_password, generate_first_name
 from data import MAIN_URL, LOGIN, PASSWORD, FIRST_NAME, CREATE_COURIER_URL
-from conftest import delete_courier, create_courier
+
 
 class TestCreateCourier:
 
