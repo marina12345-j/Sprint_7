@@ -1,7 +1,7 @@
 import allure
 import requests
 from helpers import generate_password, generate_first_name
-from data import MAIN_URL, LOGIN, PASSWORD, FIRST_NAME, CREATE_COURIER_URL
+from data import MAIN_URL, LOGIN, PASSWORD, FIRST_NAME, CREATE_COURIER_URL, NegativeAnswers
 
 
 class TestCreateCourier:
@@ -12,7 +12,7 @@ class TestCreateCourier:
         payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
-        assert response.status_code == 201
+        assert response.status_code == 201 and response.json() == NegativeAnswers.OK_TRUE
 
 
     @allure.title('Нельзя создать двух одинаковых курьеров')
@@ -21,8 +21,7 @@ class TestCreateCourier:
         payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
-        assert response.status_code == 409 and response.json() == {"code": 409,
-                                                                   "message": "Этот логин уже используется. Попробуйте другой."}
+        assert response.status_code == 409 and response.json() == NegativeAnswers.COURIER_LOGIN_ALREADY_USED
 
 
 
@@ -32,28 +31,28 @@ class TestCreateCourier:
         payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
-        assert response.json() == {"ok": True}
+        assert response.status_code == 201 and response.json() == NegativeAnswers.OK_TRUE
 
     @allure.title('Создать курьера без пароля')
     def test_create_courier_without_password_code_400(self):
         payload = {"login": LOGIN, "firstName": FIRST_NAME}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
-        assert response.json() == {'code': 400, 'message': 'Недостаточно данных для создания учетной записи'}
+        assert response.status_code == 400 and response.json() == NegativeAnswers.COURIER_NOT_ENOUGH_DATA
 
     @allure.title('Создать курьера без логина')
     def test_create_courier_without_login_code_400(self):
         payload = {"password": PASSWORD, "firstName": FIRST_NAME}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
-        assert response.json() == {'code': 400, 'message': 'Недостаточно данных для создания учетной записи'}
+        assert response.status_code == 400 and response.json() == NegativeAnswers.COURIER_NOT_ENOUGH_DATA
 
     @allure.title('Создать курьера без firstName')
     def test_create_courier_without_firstname_code_400(self):
         payload = {"login": LOGIN, "password": PASSWORD,}
         response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
-        assert response.json() == {'code': 400, 'message': 'Недостаточно данных для создания учетной записи'}
+        assert response.status_code == 400 and response.json() == NegativeAnswers.COURIER_NOT_ENOUGH_DATA
 
 
     @allure.title('Создать курьера c логином, который уже существует в системе')
@@ -61,5 +60,4 @@ class TestCreateCourier:
         payload = {"login": LOGIN, "password": generate_password(), "firstName": generate_first_name()}
         response = requests.post(f'{MAIN_URL}/api/v1/courier', data=payload)
 
-        assert response.status_code == 409 and response.json() == {"code": 409,
-                                                                   "message": "Этот логин уже используется. Попробуйте другой."}
+        assert response.status_code == 409 and response.json() == NegativeAnswers.COURIER_LOGIN_ALREADY_USED
